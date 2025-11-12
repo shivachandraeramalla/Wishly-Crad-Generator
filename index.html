@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Wishly — Cards (v3.2)</title>
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0a0f1e" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="top">
+        <h1 class="logo"><span class="accent">Wishly</span> — Cute Cards</h1>
+        <p class="sub">Mobile-first • Minimal • Instant share</p>
+      </header>
+
+      <section class="builder">
+        <form id="cardForm" class="controls" onsubmit="return false;">
+          <div class="form-row">
+            <label
+              >Recipient
+              <input id="toName" placeholder="e.g. Priya" />
+            </label>
+
+            <label
+              >Occasion
+              <select id="occasion">
+                <option value="birthday">Birthday 🎂</option>
+                <option value="anniversary">Anniversary 💕</option>
+                <option value="invitation">Invitation ✉️</option>
+                <option value="congrats">Congrats 🎉</option>
+                <option value="thankyou">Thank you 🙏</option>
+                <option value="meeting">Meeting Reminder 📅</option>
+                <option value="custom">Custom ✍️</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label
+              >Card Size
+              <select id="cardSize">
+                <option value="1">Square 1:1</option>
+                <option value="0.5625">Story 9:16 (mobile)</option>
+                <option value="0.75">Portrait 3:4</option>
+                <option value="1.3333">Landscape 4:3</option>
+                <option value="1.7777">Banner 16:9</option>
+              </select>
+            </label>
+
+            <label
+              >Event date (optional)
+              <input id="eventDate" type="date" />
+            </label>
+          </div>
+
+          <label
+            >Title (custom)
+            <input id="title" placeholder="You're Invited!" />
+          </label>
+
+          <label
+            >Title color
+            <input id="titleColor" type="color" value="#ff6fa3" />
+          </label>
+
+          <label
+            >Message
+            <textarea
+              id="message"
+              rows="3"
+              placeholder="Write a sweet note..."
+            ></textarea>
+          </label>
+
+          <div class="form-row">
+            <label
+              >Upload image (optional)
+              <input id="photo" type="file" accept="image/*" />
+            </label>
+
+            <label
+              >Image scale
+              <input
+                id="scale"
+                type="range"
+                min="0.3"
+                max="2"
+                step="0.01"
+                value="1"
+              />
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label
+              >Background preset
+              <select id="bgPreset">
+                <option value="blush">Blush</option>
+                <option value="sky">Sky</option>
+                <option value="mint">Mint</option>
+                <option value="lilac">Lilac</option>
+                <option value="cream">Cream</option>
+                <option value="charcoal">Charcoal</option>
+              </select>
+            </label>
+
+            <label
+              >Custom bg color
+              <input id="bgColor" type="color" value="#fff5f8" />
+            </label>
+          </div>
+
+          <div class="controls-row">
+            <button id="suggestBtn" class="btn">Suggest</button>
+            <button id="randomTheme" class="btn ghost">Random Theme</button>
+            <button id="randomMsg" class="btn ghost">Random Message</button>
+          </div>
+
+          <div class="actions">
+            <button id="download" class="btn primary">Download PNG</button>
+            <button id="share" class="btn">Share</button>
+            <button id="saveReminder" class="btn">Save Reminder</button>
+            <button id="clearSaved" class="btn ghost">Clear Saved</button>
+          </div>
+
+          <div class="hint-row">
+            <small class="muted"
+              >Tip: canvas fills width on mobile. Designs auto-save and
+              restore.</small
+            >
+          </div>
+        </form>
+
+        <div class="preview">
+          <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="cardCanvas" tabindex="0"></canvas>
+            <div class="tip">
+              Drag image to reposition. Slider scales image. Card size changes
+              full layout.
+            </div>
+          </div>
+
+          <div class="meta">
+            <p class="hint">Live preview — everything updates immediately.</p>
+            <div id="upcoming"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <small>Made with ♥ by Shiva — Wishly v3.2</small>
+        <div class="pwa-hint" id="installHint">
+          Install: Add to Home Screen for app-like experience
+        </div>
+      </footer>
+    </main>
+
+    <!-- scripts -->
+    <script src="script.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .catch(console.error);
+      }
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const hint = document.getElementById("installHint");
+        hint.style.display = "block";
+        hint.addEventListener("click", async () => {
+          if (!deferredPrompt) return;
+          deferredPrompt.prompt();
+          await deferredPrompt.userChoice;
+          deferredPrompt = null;
+          hint.style.display = "none";
+        });
+      });
+    </script>
+  </body>
+</html>
